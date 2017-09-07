@@ -1,0 +1,116 @@
+<html><head><script src="../CssRequirements/scriptFile.js"></script><link rel ="stylesheet"href = "../CssRequirements/styleFile.css"></head><body><h3>dependencytable.cpp.htm</h3><hr/><div class ="indent"><h4>Dependencies:</h4><br><a href =../ResultFolder/CodePublisher.h.htm>CodePublisher.h</a><br><br><a href =../ResultFolder/CppProperties.h.htm>CppProperties.h</a><br><br><a href =../ResultFolder/DepAnal.h.htm>DepAnal.h</a><br><br><a href =../ResultFolder/DependencyAnalysis.h.htm>DependencyAnalysis.h</a><br><br><a href =../ResultFolder/Executive.cpp.htm>Executive.cpp</a><br><br><a href =../ResultFolder/Executive.h.htm>Executive.h</a><br><br><a href =../ResultFolder/NoSqlDb.h.htm>NoSqlDb.h</a><br><br><a href =../ResultFolder/TypeTable.h.htm>TypeTable.h</a><br><br><a href =../ResultFolder/XmlDocument.h.htm>XmlDocument.h</a><br><br><a href =../ResultFolder/XmlElement.h.htm>XmlElement.h</a><br><br><a href =../ResultFolder/dependencytable.h.htm>dependencytable.h</a><br></div><hr/><pre>/////////////////////////////////////////////////////////////////////
+// dependencytable.h - dependency analysis and database creation	//
+//  Mandar Mathure, CSE687 - Object Oriented Design, Spring 2017  //
+//																   //
+//  Language:      Visual C++ 2015		                           //
+//  Platform:      Lenovo y700, Windows 10						   //
+//  Application:   TypeBased-Dependency Analyzer CSE687 Pr2, Mar-7 //
+//  Author:        Mandar Mathure, CST 4-187, Syracuse University  //
+//                 (315) 949-8682, mmathure@syr.edu                //
+//																	//
+/////////////////////////////////////////////////////////////////////
+
+#include "dependencytable.h"
+dependencytable::dependencytable() :
+	ASTref_(Repository::getInstance()-&gtAST())
+
+<a href = javascript:toggle_visibility('0');>{</a><div id=0>
+}</div>
+
+
+int dependencytable::makedatabase(std::string filespec) <a href = javascript:toggle_visibility('1');>{</a><div id=1>
+	if (filespec != "") <a href = javascript:toggle_visibility('2');>{</a><div id=2>
+		std::cout &lt&lt "\n" &lt&lt DB.value(filespec).show();
+	}</div>
+
+	return 0;
+}</div>
+
+ int dependencytable::makexml(std::string xml) <a href = javascript:toggle_visibility('3');>{</a><div id=3>
+	std::ofstream myfile;
+
+	myfile.open(xml);
+
+	std::cout &lt&lt "==========================================================Database Contents are saved to a File in XML format(default : Project2.txt)===============================";
+	X x;
+	x.makexml(DB);
+	myfile.close();
+
+	return 0;
+}</div>
+
+
+ NoSqlDb&ltStrData&gt dependencytable::makedeptable(typetable& x, std::string filespec, std::string xmlname) <a href = javascript:toggle_visibility('4');>{</a><div id=4>
+	if (filespec != "") <a href = javascript:toggle_visibility('5');>{</a><div id=5>
+		static std::string path = "";
+		try <a href = javascript:toggle_visibility('6');>{</a><div id=6>
+			std::ifstream in(filespec);
+			if (!in.good())
+			<a href = javascript:toggle_visibility('7');>{</a><div id=7>
+				std::cout &lt&lt "cant open";
+				return DB;
+			}</div>
+			else
+			<a href = javascript:toggle_visibility('8');>{</a><div id=8>	Toker toker;
+				toker.returnComments();
+				toker.attach(&in);
+				mytableentry my = x.getterx();
+				std::set&ltstd::string&gt tempvector;
+				do
+				<a href = javascript:toggle_visibility('9');>{</a><div id=9>
+					std::string tok = toker.getTok();
+					for (auto tt : my) <a href = javascript:toggle_visibility('10');>{</a><div id=10>
+						if (tok == tt.first) <a href = javascript:toggle_visibility('11');>{</a><div id=11>
+							tempvector.insert(tt.second.second);
+						}</div>
+					}</div>
+				}</div> while (in.good());
+				elementadd.name = filespec;
+				while (!elementadd.child.empty())
+				<a href = javascript:toggle_visibility('12');>{</a><div id=12>
+					elementadd.child.pop_back();
+				}</div>
+				for (auto iter = tempvector.begin(); iter != tempvector.end(); ++iter) <a href = javascript:toggle_visibility('13');>{</a><div id=13>
+					elementadd.child.push_back(*iter);
+				}</div>
+				DB.save(elementadd.name, elementadd);
+				deptableentry_.insert(std::make_pair(filespec, tempvector));
+			}</div>
+			std::cout &lt&lt std::setw(140) &lt&lt std::left &lt&lt filespec &lt&lt "=&gt";
+			for (auto set_it = deptableentry_[filespec].begin(); set_it != deptableentry_[filespec].end(); ++set_it) <a href = javascript:toggle_visibility('14');>{</a><div id=14>
+				std::cout &lt&lt *set_it &lt&lt ", ";
+			}</div>
+		}</div> catch (std::logic_error& ex)
+		<a href = javascript:toggle_visibility('15');>{</a><div id=15>
+			std::cout &lt&lt "\n  " &lt&lt ex.what();
+		}</div>
+		std::cout &lt&lt "\n\n";
+	}</div>
+	return DB;
+}</div>
+
+
+#ifdef DEPENDENCYTABLE_TEST
+
+
+ int main() <a href = javascript:toggle_visibility('16');>{</a><div id=16>
+
+
+	 d.makexml("filename.txt");
+	 //other interface are not included in this test stub because they are dependent on multiple files to suppy the arguments 
+	 //just like DepAnal.cpp
+	 
+	 
+	 //testing tependency table;
+
+
+ }</div>
+
+
+
+
+
+
+
+#endif 
+</pre></body></html>

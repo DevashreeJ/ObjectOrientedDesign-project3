@@ -1,0 +1,106 @@
+<html><head><script src="../CssRequirements/scriptFile.js"></script><link rel ="stylesheet"href = "../CssRequirements/styleFile.css"></head><body><h3>dependencytable.h.htm</h3><hr/><div class ="indent"><h4>Dependencies:</h4><br><a href =../ResultFolder/CodePublisher.h.htm>CodePublisher.h</a><br><br><a href =../ResultFolder/CppProperties.h.htm>CppProperties.h</a><br><br><a href =../ResultFolder/DepAnal.h.htm>DepAnal.h</a><br><br><a href =../ResultFolder/DependencyAnalysis.h.htm>DependencyAnalysis.h</a><br><br><a href =../ResultFolder/Executive.cpp.htm>Executive.cpp</a><br><br><a href =../ResultFolder/Executive.h.htm>Executive.h</a><br><br><a href =../ResultFolder/NoSqlDb.h.htm>NoSqlDb.h</a><br><br><a href =../ResultFolder/TypeTable.h.htm>TypeTable.h</a><br><br><a href =../ResultFolder/XmlDocument.h.htm>XmlDocument.h</a><br><br><a href =../ResultFolder/XmlElement.h.htm>XmlElement.h</a><br><br><a href =../ResultFolder/dependencytable.h.htm>dependencytable.h</a><br></div><hr/><pre>#pragma once
+/////////////////////////////////////////////////////////////////////
+// dependencytable.h - dependency analysis and database creation	//
+//  Mandar Mathure, CSE687 - Object Oriented Design, Spring 2017  //
+//																   //
+//  Language:      Visual C++ 2015		                           //
+//  Platform:      Lenovo y700, Windows 10						   //
+//  Application:   TypeBased-Dependency Analyzer CSE687 Pr2, Mar-7 //
+//  Author:        Mandar Mathure, CST 4-187, Syracuse University  //
+//                 (315) 949-8682, mmathure@syr.edu                //
+//																	//
+/////////////////////////////////////////////////////////////////////
+/*
+* - Manual Information
+This package performs dependency analysis on the typetable created in typetable package.
+The dependency analysis is stored in the database created in project 1 and a separate package is used to display the 
+contents in xml format.
+
+Public Interface:
+=================
+int makedatabase(),int makexml()
+
+* - Build Process:
+Required files
+- Tokenizer.h,typetable.h,NoSqlDb.h,ActionsAndRules.h,Persist.h
+Build commands
+This is a static library builds with code analyzer
+- devenv CodeAnalyzerEx.sln
+
+* - Maintenance information
+ver 1.0 : 4 Mar 2017
+-	first release
+ver 2.0: 12 Mar 2017
+-added makexml()
+-modified existing code to suit modular needs
+*/
+#include&ltunordered_map&gt
+#include&ltvector&gt
+#include &ltfstream&gt
+#include &ltiomanip&gt
+#include &ltexception&gt
+#include &ltlocale&gt
+#include &ltiostream&gt
+#include "../Tokenizer/Tokenizer.h"
+#include "../typetable/typetable.h"
+#include "../NoSqlDb/NoSqlDb.h"
+#include "../Parser/ActionsAndRules.h"
+#include&ltalgorithm&gt
+#include "../XmlDocument/Persist/Persist.h"
+#include &ltset&gt
+using namespace Scanner;
+using namespace CodeAnalysis;
+class dependencytable <a href = javascript:toggle_visibility('0');>{</a><div id=0>
+
+public:
+	using mytablecolumns = std::pair&ltstd::string, std::string&gt;
+	using mytableentry = std::unordered_map&ltstd::string, mytablecolumns&gt;
+	using deptableentry = std::unordered_map&ltstd::string, std::set&ltstd::string&gt&gt;
+	dependencytable();
+	int makedatabase(std::string  filespec);
+	int makexml(std::string xml);
+
+	NoSqlDb&ltStrData&gt makedeptable(typetable& x, std::string filespec, std::string xmlname);
+
+
+	deptableentry& dependencytable::getter_() <a href = javascript:toggle_visibility('1');>{</a><div id=1>
+
+		return deptableentry_;
+	}</div>
+
+
+
+	void dependencytable::setter(deptableentry& x) <a href = javascript:toggle_visibility('2');>{</a><div id=2>
+
+		deptableentry_ = x;
+
+	}</div>
+
+
+
+
+
+
+private:
+	deptableentry deptableentry_;
+	std::unordered_map&ltstd::string, int&gt strongmap;
+	NoSqlDb&ltStrData&gt DB;
+	Element&ltStrData&gt elementadd;
+	AbstrSynTree& ASTref_;
+
+
+
+
+
+
+
+}</div>;
+
+
+
+
+
+
+
+
+</pre></body></html>

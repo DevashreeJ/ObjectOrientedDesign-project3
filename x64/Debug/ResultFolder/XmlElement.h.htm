@@ -1,0 +1,241 @@
+<html><head><script src="../CssRequirements/scriptFile.js"></script><link rel ="stylesheet"href = "../CssRequirements/styleFile.css"></head><body><h3>XmlElement.h.htm</h3><hr/><div class ="indent"><h4>Dependencies:</h4><br><a href =../ResultFolder/CodePublisher.h.htm>CodePublisher.h</a><br><br><a href =../ResultFolder/CppProperties.h.htm>CppProperties.h</a><br><br><a href =../ResultFolder/DepAnal.h.htm>DepAnal.h</a><br><br><a href =../ResultFolder/DependencyAnalysis.h.htm>DependencyAnalysis.h</a><br><br><a href =../ResultFolder/Executive.cpp.htm>Executive.cpp</a><br><br><a href =../ResultFolder/Executive.h.htm>Executive.h</a><br><br><a href =../ResultFolder/NoSqlDb.h.htm>NoSqlDb.h</a><br><br><a href =../ResultFolder/TypeTable.h.htm>TypeTable.h</a><br><br><a href =../ResultFolder/XmlDocument.h.htm>XmlDocument.h</a><br><br><a href =../ResultFolder/XmlElement.h.htm>XmlElement.h</a><br></div><hr/><pre>#ifndef XMLELEMENT_H
+#define XMLELEMENT_H
+///////////////////////////////////////////////////////////////////
+// XmlElement.h - define XML Element types                       //
+// ver 1.5                                                       //
+// Application: Help for CSE687 Pr#2, Spring 2015                //
+// Platform:    Dell XPS 2720, Win 8.1 Pro, Visual Studio 2013   //
+// Author:      Jim Fawcett, CST 4-187, 443-3948                 //
+//              jfawcett@twcny.rr.com                            //
+///////////////////////////////////////////////////////////////////
+/*
+* Package Operations:
+* -------------------
+* This package is intended to help students in CSE687 - Object Oriented Design
+* get started with Project #2 - XML Document Model.  It uses C++11 constructs,
+* most noteably std::shared_ptr.  The XML Document Model is essentially
+* a program-friendly wrapper around an Abstract Syntax Tree (AST) used to
+* contain the results of parsing XML markup.
+*
+* Abstract Syntax Trees are unordered trees with two types of nodes:
+*   Terminal nodes     - nodes with no children
+*   Non-Terminal nodes - nodes which may have a finite number of children
+* They are often used to contain the results of parsing some language.
+*
+* The elements defined in this package will be used in the AST defined in
+* the AbstractSyntaxTree package, included in this Visual Studio 2013
+* solution.
+*   AbstractXmlElement - base for all the XML Element types
+*   DocElement         - XML element with children designed to hold prologue, Xml root, and epilogue
+*   TaggedElement      - XML element with tag, attributes, child elements
+*   TextElement        - XML element with only text, no markup
+*   CommentElement     - XML element with comment markup and text
+*   ProcInstrElement   - XML element with markup and attributes but no children
+*   XmlDeclarElement   - XML declaration
+*
+* Required Files:
+* ---------------
+*   - XmlElement.h, XmlElement.cpp
+*
+* Build Process:
+* --------------
+*   devenv AST.sln /debug rebuild
+*
+* Maintenance History:
+* --------------------
+* ver 1.5 : 22 Feb 15
+* - brought comments up to date
+* ver 1.4 : 21 Feb 15
+* - Added XmlDeclElement.  It has the syntax of a ProcInstrElement but has the
+*   constraint that if present it must be the first child of the document.  The
+*   best way to handle this seemed to be to create anther element type and have
+*   the XmlDocument constructor always add as the first child.
+* - Fixed a bug in DocElement::addChild found by Venkat Subha Rao Cheedella. 
+*   addChild now correctly handles allowing as many comments and ProcInstructions
+*   as needed but only one tagged element as the root of the XML information.
+* ver 1.3 : 17 Feb 15
+* - Removed move ctor and move assign declar comments in all classes.
+*   Move construction and move assignment is needed only by the XmlDocument class
+* - added addAttribute and removeAttribute to the ProcInstrElement class
+* - fixed a bug in the DocElement::addChild method that prevented multiple
+*   ProcInstrElements and CommentElements from being added.
+* - Scott Constable pointed out two of these three problems to me earlier today.
+*   Thanks Scott!
+* ver 1.2 : 14 Feb 15
+* - removed removeChild(const std::string& value);
+* - declared deleted copy constructor and copy assignment
+* - added comment declaring move constructor and move assignment
+* - added DocElement - I decided that Scott Constable was right about this
+* - fixed flaw in declaration of ProcInstrElement attribs_ member
+* - return string by value from AbstractXmlElement::value() and all derived elements
+* ver 1.1 : 12 Feb 15
+* - modified Element::toString() to improve whitespace handling
+* - added attribute test in test stub
+* Ver 1.0 : 11 Feb 15
+* - first release
+*/
+
+#include &ltmemory&gt
+#include &ltstring&gt
+#include &ltvector&gt
+
+namespace XmlProcessing
+<a href = javascript:toggle_visibility('0');>{</a><div id=0>
+  /////////////////////////////////////////////////////////////////////////////
+  // AbstractXmlElement - base class for all concrete element types
+
+  class AbstractXmlElement
+  <a href = javascript:toggle_visibility('1');>{</a><div id=1>
+  public:
+    virtual bool addChild(std::shared_ptr&ltAbstractXmlElement&gt pChild);
+    virtual bool removeChild(std::shared_ptr&ltAbstractXmlElement&gt pChild);
+    virtual bool addAttrib(const std::string& name, const std::string& value);
+    virtual bool removeAttrib(const std::string& name);
+    virtual std::string value() = 0;
+    virtual std::string toString() = 0;
+    virtual ~AbstractXmlElement();
+  protected:
+    static size_t count;
+    static size_t tabSize;
+  }</div>;
+
+  inline bool AbstractXmlElement::addChild(std::shared_ptr&ltAbstractXmlElement&gt pChild) <a href = javascript:toggle_visibility('2');>{</a><div id=2> return false; }</div>
+  inline bool AbstractXmlElement::removeChild(std::shared_ptr&ltAbstractXmlElement&gt pChild) <a href = javascript:toggle_visibility('3');>{</a><div id=3> return false; }</div>
+  inline bool AbstractXmlElement::addAttrib(const std::string& name, const std::string& value) <a href = javascript:toggle_visibility('4');>{</a><div id=4> return false; }</div>
+  inline bool AbstractXmlElement::removeAttrib(const std::string& name) <a href = javascript:toggle_visibility('5');>{</a><div id=5> return false; }</div>
+  inline AbstractXmlElement::~AbstractXmlElement() <a href = javascript:toggle_visibility('6');>{</a><div id=6>}</div>
+
+  /////////////////////////////////////////////////////////////////////////////
+  // DocElement - holds the document prologue, XML tree, and epilog
+
+  class DocElement : public AbstractXmlElement
+  <a href = javascript:toggle_visibility('7');>{</a><div id=7>
+  public:
+    DocElement(std::shared_ptr&ltAbstractXmlElement&gt pRoot = nullptr);
+    ~DocElement() <a href = javascript:toggle_visibility('8');>{</a><div id=8>}</div>
+    DocElement(const DocElement& doc) = delete;
+    DocElement& operator=(const DocElement& doc) = delete;
+    virtual bool addChild(std::shared_ptr&ltAbstractXmlElement&gt pChild);
+    virtual bool removeChild(std::shared_ptr&ltAbstractXmlElement&gt pChild);
+    virtual std::string value();
+    virtual std::string toString();
+  private:
+    bool hasXmlRoot();
+    std::vector&ltstd::shared_ptr&ltAbstractXmlElement&gt&gt children_;
+  }</div>;
+
+  std::shared_ptr&ltAbstractXmlElement&gt makeDocElement(std::shared_ptr&ltAbstractXmlElement&gt pRoot = nullptr);
+
+  /////////////////////////////////////////////////////////////////////////////
+  // TextElement - represents the text part of an XML element
+
+  class TextElement : public AbstractXmlElement
+  <a href = javascript:toggle_visibility('9');>{</a><div id=9>
+  public:
+    TextElement(const std::string& text) : text_(text) <a href = javascript:toggle_visibility('10');>{</a><div id=10>}</div>
+    virtual ~TextElement() <a href = javascript:toggle_visibility('11');>{</a><div id=11>}</div>
+    TextElement(const TextElement& te) = delete;
+    TextElement& operator=(const TextElement& te) = delete;
+    virtual std::string value();
+    virtual std::string toString();
+  private:
+    std::string text_;
+  }</div>;
+
+  inline std::string TextElement::value() <a href = javascript:toggle_visibility('12');>{</a><div id=12> return text_; }</div>
+
+  std::shared_ptr&ltAbstractXmlElement&gt makeTextElement(const std::string& text);
+
+  /////////////////////////////////////////////////////////////////////////////
+  // Element - represents a tagged element with attributes and child elements
+
+  class TaggedElement : public AbstractXmlElement
+  <a href = javascript:toggle_visibility('13');>{</a><div id=13>
+  public:
+    TaggedElement(const std::string& tag) : tag_(tag) <a href = javascript:toggle_visibility('14');>{</a><div id=14>}</div>;
+    TaggedElement(const TaggedElement& te) = delete;
+    virtual ~TaggedElement() <a href = javascript:toggle_visibility('15');>{</a><div id=15>}</div>
+    TaggedElement& operator=(const TaggedElement& te) = delete;
+    virtual bool addChild(std::shared_ptr&ltAbstractXmlElement&gt pChild);
+    virtual bool removeChild(std::shared_ptr&ltAbstractXmlElement&gt pChild);
+    virtual bool removeChild(const std::string& value);
+    virtual bool addAttrib(const std::string& name, const std::string& value);
+    virtual bool removeAttrib(const std::string& name);
+    virtual std::string value();
+    virtual std::string toString();
+  private:
+    std::string tag_;
+    std::vector&ltstd::shared_ptr&ltAbstractXmlElement&gt&gt children_;
+    std::vector&ltstd::pair&ltstd::string, std::string&gt&gt attribs_;
+  }</div>;
+
+  std::shared_ptr&ltAbstractXmlElement&gt makeTaggedElement(const std::string& tag);
+
+  /////////////////////////////////////////////////////////////////////////////
+  // CommentElement - represents XML comments, e.g., &lt!-- comment text --&gt
+  //
+  // Incomplete
+
+  class CommentElement : public AbstractXmlElement
+  <a href = javascript:toggle_visibility('16');>{</a><div id=16>
+  public:
+    CommentElement(const std::string& text) : commentText_(text) <a href = javascript:toggle_visibility('17');>{</a><div id=17>}</div>
+    CommentElement(const CommentElement& ce) = delete;
+    virtual ~CommentElement() <a href = javascript:toggle_visibility('18');>{</a><div id=18>}</div>
+    CommentElement& operator=(const CommentElement& ce) = delete;
+    virtual std::string value() <a href = javascript:toggle_visibility('19');>{</a><div id=19> return commentText_; }</div>
+    virtual std::string toString() <a href = javascript:toggle_visibility('20');>{</a><div id=20> return "to be defined"; }</div>
+  private:
+    std::string commentText_ = "to be defined";
+  }</div>;
+
+  std::shared_ptr&ltAbstractXmlElement&gt makeCommentElement(const std::string& comment);
+
+  /////////////////////////////////////////////////////////////////////////////
+  // ProcInstrElement - represents XML Processing Instructions, e.g., &lt?xml version="1.0"?&gt
+  //
+  // Incomplete
+
+  class ProcInstrElement : public AbstractXmlElement
+  <a href = javascript:toggle_visibility('21');>{</a><div id=21>
+  public:
+    ProcInstrElement(const ProcInstrElement& pe) = delete;
+    ProcInstrElement(const std::string& type) : type_(type) <a href = javascript:toggle_visibility('22');>{</a><div id=22>}</div>
+    ProcInstrElement& operator=(const ProcInstrElement& pe) = delete;
+    virtual bool addAttrib(const std::string& name, const std::string& value);
+    virtual bool removeAttrib(const std::string& name);
+    virtual std::string value() <a href = javascript:toggle_visibility('23');>{</a><div id=23> return type_; }</div>
+    virtual std::string toString() <a href = javascript:toggle_visibility('24');>{</a><div id=24> return "to be defined"; }</div>
+  private:
+    std::vector&ltstd::pair&ltstd::string, std::string&gt&gt attribs_;
+    std::string type_ = "xml declaration";
+    std::string text;
+  }</div>;
+
+  std::shared_ptr&ltAbstractXmlElement&gt makeProcInstrElement(const std::string& type);
+
+  /////////////////////////////////////////////////////////////////////////////
+  // XmlDeclarElement - &lt?xml version="1.0"?&gt
+
+  class XmlDeclarElement : public AbstractXmlElement
+  <a href = javascript:toggle_visibility('25');>{</a><div id=25>
+  public:
+    XmlDeclarElement(const ProcInstrElement& pe) = delete;
+    XmlDeclarElement() <a href = javascript:toggle_visibility('26');>{</a><div id=26>}</div>
+    XmlDeclarElement& operator=(const ProcInstrElement& pe) = delete;
+    virtual bool addAttrib(const std::string& name, const std::string& value);
+    virtual bool removeAttrib(const std::string& name);
+    virtual std::string value() <a href = javascript:toggle_visibility('27');>{</a><div id=27> return ""; }</div>
+    virtual std::string toString();
+  private:
+    std::vector&ltstd::pair&ltstd::string, std::string&gt&gt attribs_;
+    std::string type_ = "xml declaration";
+  }</div>;
+
+  std::shared_ptr&ltAbstractXmlElement&gt makeXmlDeclarElement();
+
+
+  void title(const std::string& title, char underlineChar = '-');
+}</div>
+#endif
+</pre></body></html>

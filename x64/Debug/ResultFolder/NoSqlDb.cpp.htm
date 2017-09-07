@@ -1,0 +1,71 @@
+<html><head><script src="../CssRequirements/scriptFile.js"></script><link rel ="stylesheet"href = "../CssRequirements/styleFile.css"></head><body><h3>NoSqlDb.cpp.htm</h3><hr/><div class ="indent"><h4>Dependencies:</h4><br><a href =../ResultFolder/CodePublisher.h.htm>CodePublisher.h</a><br><br><a href =../ResultFolder/CppProperties.h.htm>CppProperties.h</a><br><br><a href =../ResultFolder/DepAnal.h.htm>DepAnal.h</a><br><br><a href =../ResultFolder/DependencyAnalysis.h.htm>DependencyAnalysis.h</a><br><br><a href =../ResultFolder/Executive.cpp.htm>Executive.cpp</a><br><br><a href =../ResultFolder/Executive.h.htm>Executive.h</a><br><br><a href =../ResultFolder/NoSqlDb.h.htm>NoSqlDb.h</a><br><br><a href =../ResultFolder/TypeTable.h.htm>TypeTable.h</a><br><br><a href =../ResultFolder/XmlDocument.h.htm>XmlDocument.h</a><br><br><a href =../ResultFolder/XmlElement.h.htm>XmlElement.h</a><br></div><hr/><pre>///////////////////////////////////////////////////////////////
+//    NoSqlDb.cpp - defines test stub for functionalities    //
+//                    implemented in NoSqlDb.h               //
+//                                                           //
+//                                                           //
+///////////////////////////////////////////////////////////////
+
+#include "NoSqlDb.h"
+#include &ltstring&gt
+#include &ltiostream&gt
+#include &lttime.h&gt
+#include &ltvector&gt
+//#include "../query/query.h"
+//#include "../CppProperties/CppProperties.h"
+#include &ltfstream&gt
+#include&lttime.h&gt
+//#include "../XmlDocument/XmlDocument/XmlDocument.h"
+using StrData = std::string;
+using intData = int;
+using Key = NoSqlDb&ltStrData&gt::Key;
+using Keys = NoSqlDb&ltStrData&gt::Keys;
+
+
+
+#ifdef TEST_NOSQLDB
+
+int main()
+<a href = javascript:toggle_visibility('0');>{</a><div id=0>
+	std::cout &lt&lt "-------------------Test Stub-------------------------";
+	NoSqlDb&ltStrData&gt db;
+	Element&ltStrData&gt el1;
+	Element&ltStrData&gt el2;
+
+	el1.name = "Mandar";
+	el1.category = "Grad";
+	el1.data = "CE";
+	time_t now = time(0);
+	struct tm * curtime = localtime(&now);
+	el1.timeDate = asctime(curtime);
+	el1.child.push_back("Jane");
+	el2.name = "Mark";
+	el2.category = "Grad";
+	el2.data = "CS";
+	el2.timeDate = asctime(curtime);
+	el2.child.push_back("Mandar");
+
+	std::cout &lt&lt "-------Testing save function-----";
+	db.save(el1.name, el1);
+	db.save(el2.name, el2);
+	std::cout &lt&lt "\n --------------Testing show function----------\n";
+	std::cout &lt&lt el1.show() &lt&lt std::endl;
+	std::cout &lt&lt el2.show() &lt&lt std::endl;
+	std::cout &lt&lt "-------------------Testing keys function--------\n";
+	for (unsigned int i = 0; i &lt db.keys().size(); ++i) <a href = javascript:toggle_visibility('1');>{</a><div id=1>
+
+		std::cout &lt&lt db.keys().at(i);
+	}</div>
+	std::cout &lt&lt "---------------Testing Delete Function------";
+	db.del("Mark");
+	std::cout &lt&lt "\n ----------------------Testing Update Function---------";
+	db.update("Mandar", el1);
+	std::cout &lt&lt "-------------------Testing value function----------------";
+	db.value("Mandar").show();
+	std::cout &lt&lt "----------------Testing updatemeta function--------------";
+	db.updatemeta("Mandar", "undergrad", "EE", <a href = javascript:toggle_visibility('2');>{</a><div id=2> "john,jane" }</div>);
+	std::cout &lt&lt "-------Testing database to XMl function--------";
+	//This function shows Xml peristence. the fromxml and to xml functions are both linked in this function
+	db.databasetoXml(db);
+}</div>
+
+#endif</pre></body></html>

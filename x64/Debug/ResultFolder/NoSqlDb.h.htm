@@ -1,0 +1,276 @@
+<html><head><script src="../CssRequirements/scriptFile.js"></script><link rel ="stylesheet"href = "../CssRequirements/styleFile.css"></head><body><h3>NoSqlDb.h.htm</h3><hr/><div class ="indent"><h4>Dependencies:</h4><br><a href =../ResultFolder/CodePublisher.h.htm>CodePublisher.h</a><br><br><a href =../ResultFolder/CppProperties.h.htm>CppProperties.h</a><br><br><a href =../ResultFolder/DepAnal.h.htm>DepAnal.h</a><br><br><a href =../ResultFolder/DependencyAnalysis.h.htm>DependencyAnalysis.h</a><br><br><a href =../ResultFolder/Executive.cpp.htm>Executive.cpp</a><br><br><a href =../ResultFolder/Executive.h.htm>Executive.h</a><br><br><a href =../ResultFolder/NoSqlDb.h.htm>NoSqlDb.h</a><br><br><a href =../ResultFolder/TypeTable.h.htm>TypeTable.h</a><br><br><a href =../ResultFolder/XmlDocument.h.htm>XmlDocument.h</a><br><br><a href =../ResultFolder/XmlElement.h.htm>XmlElement.h</a><br></div><hr/><pre>///////////////////////////////////////////////////////////////////////
+// NoSqlDb.h - key/value pair in-memory database					 //
+// Application: Creating Nosql db for storing and retrieving data    //
+// Platform:    Lenovo, Win 10, Visual Studio 2015		             //
+// Author:	    Jim Fawcett	                                         //
+// CSE687 - Object Oriented Design, Spring 2017		                 //
+///////////////////////////////////////////////////////////////////////
+ /*
+ * Package Operations:
+ * -------------------
+ * This Package helps in the creation of map of data for storing key-value pair.
+ * The Nosql class declares methods to perform operations on the created map and 
+ * the Element class helps in the creation of elements  to be inserted in the map. 
+ * The key part consists of a string and the value part consists of element data.
+ *
+ * Element class:
+ * Consists of data, name, description, category, timedata, children.
+ * data, name, description, category, timedate are of the type string.
+ * The data variable might be any kind of data ranging from string to struct.
+ * Member functions: 
+ * setchild() - adds child to children vector
+ * getchild() - returns child from children vector
+ * removechild() - removes child from specified element
+ *
+ * NoSqlDb Class:
+ * Created for saving data in a map. Uses object of element class to perform 
+ * following operations on it.
+ * save() - adds a key value pair in a map 
+ * updateData() - updates the values in an element
+ * deleteElement () - deletes element from the map
+ * showChild () - shows children of the specified key
+ *
+ * Files Used:
+ * -------------
+ * Cppproperties.h
+*/
+
+
+#pragma once
+#include &ltunordered_map&gt
+#include&ltalgorithm&gt
+#include &ltstring&gt
+#include &ltsstream&gt
+#include &ltvector&gt
+#include &ltiomanip&gt
+#include &ltiostream&gt
+#include &ltiterator&gt
+#include&lttime.h&gt
+#include"CppProperties.h"
+
+
+
+/////////////////////////////////////////////////////////////////////
+// Element class represents a data record in our NoSql database
+// - in our NoSql database that is just the value in a key/value pair
+// - it needs to store child data, something for you to implement
+//
+namespace NoSQLDB
+<a href = javascript:toggle_visibility('0');>{</a><div id=0>
+	using Key = std::string;
+	using Keys = std::vector&ltKey&gt;
+	using Name = std::string;
+	using Category = std::string;
+	using TimeDate = std::string;
+	using Description = std::string;
+	
+	
+	template&lttypename Data&gt
+	class Element
+	<a href = javascript:toggle_visibility('1');>{</a><div id=1>
+	public:
+
+		Property&ltName&gt name;            // metadata
+		Property&ltCategory&gt category;    // metadata
+		Property&ltTimeDate&gt timeDate;    // metadata
+		Property&ltDescription&gtdescription;
+		Property&ltData&gt data;            // data
+
+	  //  NoSqlDb&ltData&gt nsdb;	
+		
+
+	public:
+		std::vector&ltstd::string&gt Children;
+		void setChild(std::string key)  //sets the element as the child of the element from which this method is called.
+		<a href = javascript:toggle_visibility('2');>{</a><div id=2>
+
+			this-&gtChildren.push_back(key);
+		}</div>
+		std::vector&ltstd::string&gt getChild()
+		<a href = javascript:toggle_visibility('3');>{</a><div id=3>
+			return this-&gtChildren;
+		}</div>
+
+		void removeChild(std::string key) //This method deletes a child key from the given element if it exists.
+		<a href = javascript:toggle_visibility('4');>{</a><div id=4>
+			std::vector&ltstd::string&gt::iterator result = find(Children.begin(), Children.end(), key);
+
+			if (result != Children.end())
+				Children.erase(result);
+
+			else
+				std::cout &lt&lt "\n" &lt&lt "child not found";
+		}</div>
+		//std::string currentDateTime();
+		std::string show();
+	}</div>;
+
+
+
+	template&lttypename Data&gt
+	std::string Element&ltData&gt::show()
+	<a href = javascript:toggle_visibility('5');>{</a><div id=5>
+		// show children when you've implemented them
+
+		std::ostringstream out;
+		std::vector&ltstd::string&gt::iterator it;
+		out.setf(std::ios::adjustfield, std::ios::left);
+
+		out &lt&lt "\n    " &lt&lt "name" &lt&lt " : " &lt&lt name;
+		out &lt&lt "\n    " &lt&lt "category" &lt&lt " : " &lt&lt category;
+		out &lt&lt "\n    " &lt&lt "description" &lt&lt " : " &lt&lt description;
+		out &lt&lt "\n    " &lt&lt "timeDate" &lt&lt " : " &lt&lt timeDate;
+		out &lt&lt "    data" &lt&lt " : " &lt&lt data;
+		//out &lt&lt "\n    " &lt&lt std::setw(8) &lt&lt "children" &lt&lt " : ";
+		//out &lt&lt "\n";
+		return out.str();
+	}</div>
+
+
+	/////////////////////////////////////////////////////////////////////
+	// NoSqlDb class is a key/value pair in-memory database
+	// - stores and retrieves elements
+	// - you will need to add query capability
+	//   That should probably be another class that uses NoSqlDb
+	//
+	template&lttypename Data&gt
+	class NoSqlDb
+	<a href = javascript:toggle_visibility('6');>{</a><div id=6>
+
+	public:
+
+		template&lttypename Data&gt
+		friend class Query;
+
+		template&lttypename Data&gt
+		friend class Test;
+
+		using Key = std::string;
+		using Keys = std::vector&ltKey&gt;
+
+		Keys keys();
+		bool save(Key key, Element&ltData&gt elem);
+		bool updateData(Key key, Element&ltData&gt &elem);
+		void  deleteElement(Element&ltData&gt &newElem);
+		Element&ltData&gt value(Key key);
+
+		size_t count();
+		void showChild(Element&ltData&gt element);
+	private:
+		using Item = std::pair&ltKey, Element&ltData&gt&gt;
+
+		std::unordered_map&ltKey, Element&ltData&gt&gt store;
+	}</div>;
+
+	template&lttypename Data&gt
+	typename NoSqlDb&ltData&gt::Keys NoSqlDb&ltData&gt::keys()
+	<a href = javascript:toggle_visibility('7');>{</a><div id=7>
+		Keys keys;
+		for (Item item : store)
+		<a href = javascript:toggle_visibility('8');>{</a><div id=8>
+			keys.push_back(item.first);
+		}</div>
+		return keys;
+	}</div>
+
+	template&lttypename Data&gt
+	bool NoSqlDb&ltData&gt::save(Key key, Element&ltData&gt elem)
+	<a href = javascript:toggle_visibility('9');>{</a><div id=9>
+		if (store.find(key) != store.end())
+			return false;
+		store[key] = elem;
+		return true;
+	}</div>
+
+	/////////////////////////////////////////////////////////////////////
+	//updateData will be called when existing data has to be modified
+	// - finds key to be updated
+	// - replaces the updated data with old data.
+	//
+	template&lttypename Data&gt
+	bool NoSqlDb&ltData&gt::updateData(Key key, Element&ltData&gt &newElem)
+	<a href = javascript:toggle_visibility('10');>{</a><div id=10>
+		//NoSqlDb&ltData&gt ndb;
+		//ndb.value(key).name = key;
+		if (store.find(key) != store.end())
+		<a href = javascript:toggle_visibility('11');>{</a><div id=11>
+			store[key] = newElem;
+			return true;
+		}</div>
+		return false;
+
+	}</div>
+
+
+	template&lttypename Data&gt
+	Element&ltData&gt NoSqlDb&ltData&gt::value(Key key)
+	<a href = javascript:toggle_visibility('12');>{</a><div id=12>
+		if (store.find(key) != store.end())
+			return store[key];
+		return Element&ltData&gt();
+	}</div>
+
+	template&lttypename Data&gt
+	size_t NoSqlDb&ltData&gt::count()
+	<a href = javascript:toggle_visibility('13');>{</a><div id=13>
+		return store.size();
+	}</div>
+
+
+	/////////////////////////////////////////////////////////////////////
+	// showchild is a method which will be called to display children
+	// of a given element. 
+	// - uses getchild for retreiving keys in child vector.
+	// - iterates through vector and displays each child.
+
+	template&lttypename Data&gt
+	inline void NoSqlDb&ltData&gt::showChild(Element&ltData&gt element)
+	<a href = javascript:toggle_visibility('14');>{</a><div id=14>
+		std::vector&ltstd::string&gt  first = element.getChild();
+		std::vector&ltstd::string&gt::iterator it;
+		for (it = first.begin(); it != first.end(); ++it)
+		<a href = javascript:toggle_visibility('15');>{</a><div id=15>
+			if (element.getChild().empty())
+			<a href = javascript:toggle_visibility('16');>{</a><div id=16>
+				std::cout &lt&lt "No child";
+			}</div>
+			else
+			<a href = javascript:toggle_visibility('17');>{</a><div id=17>
+				std::cout &lt&lt *it &lt&lt "\t";
+			}</div>
+		}</div>
+	}</div>
+
+	/////////////////////////////////////////////////////////////////////
+	// deleteElement is a method which will be called to delete 
+	// a specific element.
+	// - deletes the key of specified element from children vector of 
+	//   other elements if it exists.
+	// - deletes the element from the map 
+
+	template&lttypename Data&gt
+	inline void NoSqlDb&ltData&gt::deleteElement(Element&ltData&gt &newElem)
+	<a href = javascript:toggle_visibility('18');>{</a><div id=18>
+		NoSqlDb&ltData&gt ndb;
+
+		std::string keycomparator = newElem.name;
+
+		for (auto &mapIterator = store.begin(); mapIterator != store.end(); ++mapIterator)
+		<a href = javascript:toggle_visibility('19');>{</a><div id=19>
+
+			Element &ltData&gt temp = mapIterator-&gtsecond;
+			std::vector&ltstd::string&gt comparator = temp.getChild();
+
+			for (std::vector&ltstd::string&gt::iterator iter = comparator.begin(); iter != comparator.end(); ++iter)
+			<a href = javascript:toggle_visibility('20');>{</a><div id=20>
+				if (*iter == keycomparator)
+				<a href = javascript:toggle_visibility('21');>{</a><div id=21>
+					temp.removeChild(keycomparator); //removes the key from child vector
+					store[temp.name] = temp; //saves changes.
+				}</div>
+			}</div>
+		}</div>
+		store.erase(keycomparator);
+	}</div>
+}</div>
+</pre></body></html>

@@ -1,0 +1,135 @@
+<html><head><script src="../CssRequirements/scriptFile.js"></script><link rel ="stylesheet"href = "../CssRequirements/styleFile.css"></head><body><h3>CppProperties.h.htm</h3><hr/><div class ="indent"><h4>Dependencies:</h4><br><a href =../ResultFolder/CodePublisher.h.htm>CodePublisher.h</a><br><br><a href =../ResultFolder/CppProperties.h.htm>CppProperties.h</a><br><br><a href =../ResultFolder/DepAnal.h.htm>DepAnal.h</a><br><br><a href =../ResultFolder/DependencyAnalysis.h.htm>DependencyAnalysis.h</a><br><br><a href =../ResultFolder/Executive.cpp.htm>Executive.cpp</a><br><br><a href =../ResultFolder/Executive.h.htm>Executive.h</a><br><br><a href =../ResultFolder/NoSqlDb.h.htm>NoSqlDb.h</a><br><br><a href =../ResultFolder/TypeTable.h.htm>TypeTable.h</a><br><br><a href =../ResultFolder/XmlDocument.h.htm>XmlDocument.h</a><br><br><a href =../ResultFolder/XmlElement.h.htm>XmlElement.h</a><br></div><hr/><pre>#pragma once
+/////////////////////////////////////////////////////////////////////
+// CppProperties.h - Defines read/write and read only properties   //
+// ver 1.1                                                         //
+// Source: Michael Litvin (see link below)                         //
+// Jim Fawcett, CSE687 - Object Oriented Design, Spring 2017       //
+/////////////////////////////////////////////////////////////////////
+//
+// Got the idea from discussion here (scroll down about halfway):
+// http://stackoverflow.com/questions/8368512/does-c11-have-c-style-properties
+// This implementation is quite different however.
+/*
+ * Note:
+ * -----
+ *   These properties provide virtual methods to support changing the
+ *   operation of getter and setter.  But, you don't usually want to
+ *   override because that changes the name of the property.  For example
+ *   see the Y class defined in CppProperties.cpp.
+ *
+ *   Instead, you should prefer to use the methods to provide new getter
+ *   and setter functions to change the property behaviors, as that
+ *   does not change the user's interface.
+ *
+ * Maintenance History:
+ * --------------------
+ * ver 1.1 : Jan 28 2017
+ * - fixed bug in Property class by removing bound data from all lambdas.
+ * ver 1.0 : Jan 08 2017
+ * - first release
+ *
+*/
+#include &ltiostream&gt
+#include &ltfunctional&gt
+
+/////////////////////////////////////////////////////////////////////
+// Property&ltT&gt class provides encapsulated properties for C++
+// - getter and setter functions can be customized without changing
+//   the client interface for any class that uses Property&ltT&gt
+//
+template&lttypename T&gt
+class Property
+<a href = javascript:toggle_visibility('0');>{</a><div id=0>
+public:
+  using SetterType = std::function&ltT(const T&t)&gt;
+  using GetterType = std::function&ltT(const T&t)&gt;
+
+  // initialize the property field
+
+  Property() : value(T()) <a href = javascript:toggle_visibility('1');>{</a><div id=1>}</div>
+  Property(const T& t) : value(t) <a href = javascript:toggle_visibility('2');>{</a><div id=2>}</div>
+  virtual ~Property() <a href = javascript:toggle_visibility('3');>{</a><div id=3>}</div>
+  
+  // set the property field with assignment operator
+
+  virtual Property&ltT&gt& operator=(const T &t)
+  <a href = javascript:toggle_visibility('4');>{</a><div id=4> 
+    value = setter_(t); 
+    return *this; 
+  }</div>
+  // get the property field with cast operator
+
+  virtual operator const T() const <a href = javascript:toggle_visibility('5');>{</a><div id=5> return getter_(value); }</div>
+  
+  // define methods to customize getter and setter behaviors
+
+  void newSetter(SetterType sttr) <a href = javascript:toggle_visibility('6');>{</a><div id=6> setter_ = sttr; }</div>
+  void newGetter(GetterType gttr) <a href = javascript:toggle_visibility('7');>{</a><div id=7> getter_ = gttr; }</div>
+
+  T getValue() <a href = javascript:toggle_visibility('8');>{</a><div id=8> return value; }</div>  // may be needed by custom getters
+
+protected:
+  T value;  // property field
+
+  // define default getter and setter behavior using lambdas
+
+  SetterType setter_ = [](const T& t) <a href = javascript:toggle_visibility('9');>{</a><div id=9> return t; }</div>;   // default setter
+  GetterType getter_ = [](const T& v) <a href = javascript:toggle_visibility('10');>{</a><div id=10> return v; }</div>;   // default getter
+}</div>;
+
+/*----&lt overload insertion operator for std::string properties &gt---*/
+
+std::ostream& operator&lt&lt(std::ostream& out, Property&ltstd::string&gt& p)
+<a href = javascript:toggle_visibility('11');>{</a><div id=11>
+  std::string temp = p;
+  try <a href = javascript:toggle_visibility('12');>{</a><div id=12>
+    out &lt&lt (temp).c_str();
+  }</div>
+  catch (std::exception& ex)
+  <a href = javascript:toggle_visibility('13');>{</a><div id=13>
+    std::cout &lt&lt "\n  exception:\n  " &lt&lt ex.what() &lt&lt "\n";
+  }</div>
+  return out;
+}</div>
+
+/////////////////////////////////////////////////////////////////////
+// Property&ltconst T&gt class provides encapsulated properties for C++
+// - getter function can be customized without changing
+//   the client interface for any class that uses Property&ltT&gt
+// - no setter is provided since the class is used for const properties
+// - comments for this class would be same as above, and so are omitted
+//
+template&lttypename T&gt
+class Property&ltconst T&gt
+<a href = javascript:toggle_visibility('14');>{</a><div id=14>
+public:
+  using SetterType = std::function&ltT(const T&t)&gt;
+  using GetterType = std::function&ltT(const T&t)&gt;
+
+  Property() : value(T()) <a href = javascript:toggle_visibility('15');>{</a><div id=15>}</div>
+  Property(const T& t) : value(t) <a href = javascript:toggle_visibility('16');>{</a><div id=16>}</div>
+  virtual ~Property() <a href = javascript:toggle_visibility('17');>{</a><div id=17>}</div>
+  void newGetter(GetterType gttr) <a href = javascript:toggle_visibility('18');>{</a><div id=18> getter_ = gttr; }</div>
+  virtual operator const T() const <a href = javascript:toggle_visibility('19');>{</a><div id=19> return getter_(value); }</div>
+  T getValue() <a href = javascript:toggle_visibility('20');>{</a><div id=20> return value; }</div>                      // used by custom getters
+protected:
+  T value;
+  GetterType getter_ = [](const T& v) <a href = javascript:toggle_visibility('21');>{</a><div id=21> return v; }</div>;  // default getter
+}</div>;
+
+/*----&lt overload insertion operator for std::string properties &gt---*/
+
+std::ostream& operator&lt&lt(std::ostream& out, Property&ltconst std::string&gt& p)
+<a href = javascript:toggle_visibility('22');>{</a><div id=22>
+  std::string temp = p;
+  try <a href = javascript:toggle_visibility('23');>{</a><div id=23>
+    out &lt&lt (temp).c_str();
+  }</div>
+  catch (std::exception& ex)
+  <a href = javascript:toggle_visibility('24');>{</a><div id=24>
+    std::cout &lt&lt "\n  exception:\n  " &lt&lt ex.what() &lt&lt "\n";
+  }</div>
+  return out;
+}</div>
+
+</pre></body></html>
